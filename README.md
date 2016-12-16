@@ -28,7 +28,7 @@ This plugin needs to be added via the standard plugin mechanism with this builds
             mavenCentral()
         }
         dependencies {
-            classpath group: 'com.layer', name: 'gradle-git-repo-plugin', version: '2.0.2'
+            classpath group: 'com.layer', name: 'gradle-git-repo-plugin', version: '2.1.0'
         }
     }
 
@@ -81,7 +81,7 @@ Then you can run
 
     gradle publishToGithub
 
-You can also run 
+You can also run
 
     gradle publish
 
@@ -96,7 +96,7 @@ A version of this with the `maven` plugin might look like
         String repoHome = gitPublishConfig.home
         return "file://$repoHome/$org/$repo/releases"
     }
-    
+
     task publishJar(type: Upload, description: "Upload android Jar library") {
         configuration = configurations.sdkJar
         repositories {
