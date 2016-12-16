@@ -12,6 +12,8 @@ import org.ajoberstar.grgit.*
  * Created by drapp on 7/16/14.
  */
 class GitRepoPlugin  implements Plugin<Project> {
+    static repoCache = [:]
+
     void apply(Project project) {
 
         project.extensions.create("gitPublishConfig", GitPublishConfig)
@@ -92,7 +94,16 @@ class GitRepoPlugin  implements Plugin<Project> {
         }
     }
 
+    private static String repoCacheKey(File directory, String name, String gitUrl, String branch) {
+        return "${directory.path}:${name}:${gitUrl}:${branch}"
+    }
+
     private static File ensureLocalRepo(Project project, File directory, String name, String gitUrl, String branch) {
+        def cacheKey = repoCacheKey(directory, name, gitUrl, branch)
+        if(repoCache.containsKey(cacheKey)) {
+          return repoCache[cacheKey]
+        }
+
         def repoDir = new File(directory, name)
         def gitRepo;
         if(repoDir.directory || project.hasProperty("offline")) {
@@ -105,6 +116,8 @@ class GitRepoPlugin  implements Plugin<Project> {
             gitRepo.pull()
         }
 
+        repoCache[cacheKey] = repoDir;
+
         return repoDir;
     }
 
@@ -112,7 +125,6 @@ class GitRepoPlugin  implements Plugin<Project> {
         project.repositories.maven {
             url repoDir.getAbsolutePath() + "/" + type
         }
-
     }
 
 }
